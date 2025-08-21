@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Dictionary from "./Dictionary";
 import "./App.css";
 
 export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
   return (
-    <div className="App">
+    <div className={`App ${darkMode ? "dark-theme" : "light-theme"}`}>
       <div className="app-container">
+        <div className="theme-toggle">
+          <button onClick={toggleDarkMode} className="theme-btn">
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+        </div>
         <Dictionary />
         <footer>
           This project was coded by{" "}
