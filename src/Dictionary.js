@@ -5,9 +5,14 @@ import axios from "axios";
 export default function Dictionary() {
   const [keyword, setKeyword] = useState("");
   const [result, setResult] = useState(null);
+  const [photos, setPhotos] = useState([]);
 
   function handleDictionaryResponse(response) {
     setResult(response.data[0]);
+  }
+
+  function handlePexelsResponse(response) {
+    setPhotos(response.data.photos);
   }
 
   function search(event) {
@@ -16,6 +21,15 @@ export default function Dictionary() {
     // Dictionary API
     let dictionaryApiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${keyword}`;
     axios.get(dictionaryApiUrl).then(handleDictionaryResponse);
+
+    // Pexels API
+    let pexelsApiKey = process.env.REACT_APP_PEXELS_KEY;
+    let pexelsApiUrl = `https://api.pexels.com/v1/search?query=${keyword}&per_page=6`;
+    axios
+      .get(pexelsApiUrl, {
+        headers: { Authorization: `${pexelsApiKey}` },
+      })
+      .then(handlePexelsResponse);
   }
 
   function handleKeywordChange(event) {
@@ -123,6 +137,17 @@ export default function Dictionary() {
                   </div>
                 )}
               </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {photos.length > 0 && (
+        <div className="Photos">
+          <h3>Related Images</h3>
+          <div className="photos-grid">
+            {photos.map((photo) => (
+              <img src={photo.src.medium} alt={keyword} key={photo.id} />
             ))}
           </div>
         </div>
